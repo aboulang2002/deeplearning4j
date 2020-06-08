@@ -261,6 +261,7 @@
         <servlet.version>3.1.0</servlet.version>
         <snakeyaml.version>1.12</snakeyaml.version>
         <snappy.version>1.1.2.6</snappy.version>
+        <!-- FIXME: Might need be synced with all modules that uses spring-core plugin (nd4j-cuda-11.0, nd4j-tests, nd4j-common-tests) -->
         <spring.version>5.1.1.RELEASE</spring.version>
         <t-digest.version>3.2</t-digest.version>
 
@@ -284,6 +285,7 @@
         <unirest.version>1.4.9</unirest.version>
         <reflections.version>0.9.10</reflections.version>
         <breeze.version>1.0</breeze.version>
+        <byteunits.version>0.9.1</byteunits.version>
 
         <!-- To skip header file parsing phase: -Djavacpp.parser.skip=true  -->
         <javacpp.parser.skip>false</javacpp.parser.skip>
@@ -394,8 +396,14 @@
         </maven-lifecycle-mapping.version>
         <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+        <maven-dependency-plugin.version>3.0.0</maven-dependency-plugin.version>
+        <maven-invoker-plugin.version>2.2</maven-invoker-plugin.version>
+        <maven-antrun-plugin.version>1.8</maven-antrun-plugin.version>
+        <maven-replacer-plugin.version>1.5.3</maven-replacer-plugin.version>
+        <protoc-jar-maven-plugin.version>3.8.0</protoc-jar-maven-plugin.version>
         <mockito.version>2.2.6</mockito.version>
         <exec-maven-plugin.version>1.6.0</exec-maven-plugin.version>
+        <jetspeed-mvn-maven-plugin.version>2.3.1</jetspeed-mvn-maven-plugin.version>
 
         <!-- base versions -->
         <!-- Scala 2.11.x -->
@@ -550,6 +558,7 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
