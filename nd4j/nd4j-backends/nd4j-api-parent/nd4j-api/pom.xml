@@ -85,7 +85,7 @@
         <dependency>
             <groupId>net.ericaro</groupId>
             <artifactId>neoitertools</artifactId>
-            <version>1.0.0</version>
+            <version>${neoitertools.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
