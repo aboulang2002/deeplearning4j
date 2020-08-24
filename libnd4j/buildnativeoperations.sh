@@ -610,6 +610,8 @@ if [ "$MAKE_COMMAND" == "make" ]; then
     MAKE_ARGUMENTS="$MAKE_ARGUMENTS --output-sync=target"
 fi
 
+echo "MAKE COMMAND" "$MAKE_COMMAND" "$MAKE_ARGUMENTS"
+
 exec 3>&1
 eval "$MAKE_COMMAND" "$MAKE_ARGUMENTS" 2>&1 >&3 3>&-  | python3 ../../auto_vectorization/auto_vect.py   && cd ../../..
 exec 3>&- 
@@ -620,11 +622,11 @@ fi
 case "$OS" in
     aurora)
     if [ "$BUILD" == "release" ]; then
-        BLAS_LIBS="/opt/nec/ve/nlc/2.0.0/lib/libcblas.a /opt/nec/ve/nlc/2.0.0/lib/libblas_openmp.a -fopenmp"
+        BLAS_LIBS="/opt/nec/ve/nlc/2.0.0/lib/libcblas.so /opt/nec/ve/nlc/2.0.0/lib/libblas_openmp.so -fopenmp"
     else
-        BLAS_LIBS="/opt/nec/ve/nlc/2.0.0/lib/libcblas.a /opt/nec/ve/nlc/2.0.0/lib/libblas_sequential.a"
+        BLAS_LIBS="/opt/nec/ve/nlc/2.0.0/lib/libcblas.so /opt/nec/ve/nlc/2.0.0/lib/libblas_sequential.so"
     fi
-    /opt/nec/ve/bin/mk_veorun_static -o blasbuild/aurora/blas/nd4jaurora blasbuild/aurora/blas/libnd4jaurorastatic.a $BLAS_LIBS
+    # /opt/nec/ve/bin/mk_veorun_static -o blasbuild/aurora/blas/nd4jaurora blasbuild/aurora/blas/libnd4jaurorastatic.a $BLAS_LIBS
     ;;
 esac
 

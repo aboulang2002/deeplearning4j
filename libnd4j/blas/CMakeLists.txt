@@ -287,6 +287,12 @@ elseif(SD_CPU)
     file(GLOB_RECURSE LEGACY_SOURCES false ../include/legacy/impl/*.cpp  ../include/legacy/cpu/*.cpp ../include/legacy/*.h)
     file(GLOB_RECURSE LOOPS_SOURCES false ../include/loops/*.cpp ../include/loops/*.h)
 
+    if (${CMAKE_SYSTEM_NAME} MATCHES "Aurora")
+      file(GLOB_RECURSE PROBLEM_SOURCES false ../include/loops/cpu/compilation_units/*.cpp)
+      set_source_files_properties(${PROBLEM_SOURCES} PROPERTIES COMPILE_FLAGS
+                                  "-O1 -fno-openmp -fno-inline-functions")
+    endif()
+
     if (SD_X86_BUILD)
         # we disable platform optimizations for certains files for linux/macos
         set_source_files_properties(cpu/NativeOps.cpp PROPERTIES COMPILE_FLAGS "-march=x86-64 -mtune=generic")
