@@ -626,7 +626,7 @@ case "$OS" in
     else
         BLAS_LIBS="/opt/nec/ve/nlc/2.0.0/lib/libcblas.so /opt/nec/ve/nlc/2.0.0/lib/libblas_sequential.so"
     fi
-    # /opt/nec/ve/bin/mk_veorun_static -o blasbuild/aurora/blas/nd4jaurora blasbuild/aurora/blas/libnd4jaurorastatic.a $BLAS_LIBS
+    # /opt/nec/ve/bin/mk_veorun_static -o blasbuild/aurorawq/blas/nd4jaurora blasbuild/aurora/blas/libnd4jaurorastatic.a $BLAS_LIBS
     ;;
 esac
 
