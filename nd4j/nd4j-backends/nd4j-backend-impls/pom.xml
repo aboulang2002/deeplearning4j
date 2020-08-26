@@ -183,7 +183,7 @@
                 <module>nd4j-aurora</module>
             </modules>
         </profile>
-        <profile>
+        <!--<profile>
             <id>cpu</id>
             <activation>
                 <property>
@@ -220,7 +220,7 @@
                 <module>nd4j-cuda</module>
                 <module>nd4j-cuda-platform</module>
             </modules>
-        </profile>
+        </profile>-->
 
         <profile>
             <id>javacpp-platform-default</id>
