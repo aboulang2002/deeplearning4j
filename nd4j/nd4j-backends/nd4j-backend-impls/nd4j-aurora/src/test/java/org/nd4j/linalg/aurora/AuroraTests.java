@@ -18,8 +18,8 @@ public class AuroraTests {
         long handle = veo_load_library(proc, libPath);
         veo_call_async_by_name(ctx, handle, methodName, argp);
         long[] output = new long[1];
-        veo_call_wait_result(ctx,handle,output);
-        System.out.println("Output result " + output[0]);
+        int result2 = veo_call_wait_result(ctx,handle,output);
+        System.out.println("Output result " + output[0] + " with exit code " + result2);
         veo_args_free(argp);
         veo_context_close(ctx);
 
