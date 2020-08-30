@@ -17,11 +17,12 @@ public class AuroraTests {
         System.out.println("Lib path " + libPath + " method name " + methodName);
         long handle = veo_load_library(proc, libPath);
         veo_call_async_by_name(ctx, handle, methodName, argp);
-        veo_args_free(argp);
-        veo_context_close(ctx);
         long[] output = new long[1];
         veo_call_wait_result(ctx,handle,output);
         System.out.println("Output result " + output[0]);
+        veo_args_free(argp);
+        veo_context_close(ctx);
+
         //veo_proc_destroy(proc);
     }
 
