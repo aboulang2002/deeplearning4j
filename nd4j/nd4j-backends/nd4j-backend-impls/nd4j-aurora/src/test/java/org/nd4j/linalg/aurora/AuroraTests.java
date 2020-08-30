@@ -14,6 +14,7 @@ public class AuroraTests {
         veo_thr_ctxt ctx = veo_context_open(proc);
         String libPath = System.getenv("LIB_PATH");
         String methodName = System.getenv("METHOD_NAME");
+        System.out.println("Lib path " + libPath + " method name " + methodName);
         long handle = veo_load_library(proc, libPath);
         veo_call_async_by_name(ctx, handle, methodName, argp);
         veo_args_free(argp);
