@@ -19,7 +19,7 @@ public class AuroraTests {
         veo_call_async_by_name(ctx, handle, methodName, argp);
         veo_args_free(argp);
         veo_context_close(ctx);
-        veo_proc_destroy(proc);
+        //veo_proc_destroy(proc);
     }
 
 
