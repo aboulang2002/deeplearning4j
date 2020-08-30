@@ -62,7 +62,7 @@
             <artifactId>nd4j-common</artifactId>
             <version>${project.version}</version>
         </dependency>
-        
+
 
         <dependency>
             <groupId>org.nd4j</groupId>
@@ -124,8 +124,8 @@
                     </includes>
                     <junitArtifactName>junit:junit</junitArtifactName>
                     <systemPropertyVariables>
-                        <org.nd4j.linalg.defaultbackend>org.nd4j.linalg.cpu.nativecpu.CpuBackend</org.nd4j.linalg.defaultbackend>
-                        <org.nd4j.linalg.tests.backendstorun>org.nd4j.linalg.cpu.nativecpu.CpuBackend</org.nd4j.linalg.tests.backendstorun>
+                        <org.nd4j.linalg.defaultbackend>org.nd4j.linalg.aurora.CpuBackend</org.nd4j.linalg.defaultbackend>
+                        <org.nd4j.linalg.tests.backendstorun>org.nd4j.linalg.aurora.CpuBackend</org.nd4j.linalg.tests.backendstorun>
                     </systemPropertyVariables>
                     <!--
                         Maximum heap size was set to 8g, as a minimum required value for tests run.
