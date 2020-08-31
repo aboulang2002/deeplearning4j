@@ -1,7 +1,10 @@
 package org.nd4j.linalg.aurora;
 
 import org.bytedeco.javacpp.LongPointer;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.nativeblas.Nd4jAurora;
 
 import static org.nd4j.nativeblas.Nd4jAurora.*;
@@ -9,6 +12,14 @@ import static org.nd4j.nativeblas.Nd4jAurora.*;
 public class AuroraTests {
 
     @Test
+    public void testBasicAdd() {
+        INDArray arr = Nd4j.scalar(1);
+        INDArray arr2 = Nd4j.scalar(2);
+        System.out.println(arr.add(arr2));
+    }
+
+    @Test
+    @Ignore
     public void testAuroraBasic() {
         veo_proc_handle proc = veo_proc_create(0);
         Nd4jAurora.veo_args argp = veo_args_alloc();

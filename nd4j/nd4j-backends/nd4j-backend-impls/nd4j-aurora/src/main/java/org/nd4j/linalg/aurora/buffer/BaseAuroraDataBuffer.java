@@ -39,7 +39,7 @@ import static org.nd4j.linalg.api.buffer.DataType.INT8;
  *
  * @author raver119@gmail.com
  */
-public abstract class BaseAuroraDataBuffer extends BaseDataBuffer implements Deallocatable {
+public abstract class  BaseAuroraDataBuffer extends BaseDataBuffer implements Deallocatable {
 
     protected transient OpaqueDataBuffer ptrDataBuffer;
 
