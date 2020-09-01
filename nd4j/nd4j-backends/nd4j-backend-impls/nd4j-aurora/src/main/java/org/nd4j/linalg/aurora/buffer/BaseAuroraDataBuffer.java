@@ -52,7 +52,7 @@ public abstract class  BaseAuroraDataBuffer extends BaseDataBuffer implements De
 
     @Override
     public String getUniqueId() {
-        return new String("BCDB_" + instanceId);
+        return "BCDB_" + instanceId;
     }
 
     @Override

@@ -3,10 +3,12 @@ package org.nd4j.linalg.aurora;
 import org.bytedeco.javacpp.LongPointer;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.nativeblas.Nd4jAurora;
 
+import static org.junit.Assert.assertEquals;
 import static org.nd4j.nativeblas.Nd4jAurora.*;
 
 public class AuroraTests {
@@ -18,6 +20,12 @@ public class AuroraTests {
         INDArray arr = Nd4j.scalar(1);
         INDArray arr2 = Nd4j.scalar(2);
         System.out.println(arr.add(arr2));
+    }
+
+    @Test
+    public void testDataBuffers() {
+        DataBuffer buffer = Nd4j.createBuffer(2);
+        assertEquals(2,buffer.getInt(0));
     }
 
     @Test
