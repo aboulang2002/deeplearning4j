@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
+import org.nd4j.linalg.profiler.ProfilerConfig;
 import org.nd4j.nativeblas.Nd4jAurora;
 
 import static org.junit.Assert.assertEquals;
