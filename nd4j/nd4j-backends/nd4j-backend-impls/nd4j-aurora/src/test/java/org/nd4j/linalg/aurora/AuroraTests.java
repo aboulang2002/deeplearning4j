@@ -13,6 +13,8 @@ public class AuroraTests {
 
     @Test
     public void testBasicAdd() {
+        Nd4j.getEnvironment().setVerbose(true);
+        Nd4j.getEnvironment().setDebug(true);
         INDArray arr = Nd4j.scalar(1);
         INDArray arr2 = Nd4j.scalar(2);
         System.out.println(arr.add(arr2));
