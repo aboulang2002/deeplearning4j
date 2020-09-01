@@ -15,8 +15,17 @@ public class AuroraTests {
 
     @Test
     public void testBasicAdd() {
-        Nd4j.getEnvironment().setVerbose(true);
-        Nd4j.getEnvironment().setDebug(true);
+        Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder()
+                .checkWorkspaces(true)
+                .checkLocality(true)
+                .stackTrace(true)
+                .checkElapsedTime(true)
+                .checkForINF(true)
+                .nativeStatistics(true)
+                .notOptimalTAD(true)
+                .checkForNAN(true)
+                .notOptimalArguments(true)
+                .build());
         INDArray arr = Nd4j.scalar(1);
         INDArray arr2 = Nd4j.scalar(2);
         System.out.println(arr.add(arr2));
@@ -24,7 +33,7 @@ public class AuroraTests {
 
     @Test
     public void testDataBuffers() {
-        DataBuffer buffer = Nd4j.createBuffer(2);
+        DataBuffer buffer = Nd4j.createBuffer(new int[] {2});
         assertEquals(2,buffer.getInt(0));
     }
 
