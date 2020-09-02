@@ -5,9 +5,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.buffer.DataBuffer;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.transforms.pairwise.arithmetic.AddOp;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.profiler.ProfilerConfig;
 import org.nd4j.nativeblas.Nd4jAurora;
+import org.nd4j.nativeblas.Nd4jAuroraOps;
 
 import static org.junit.Assert.assertEquals;
 import static org.nd4j.nativeblas.Nd4jAurora.*;
@@ -29,7 +31,11 @@ public class AuroraTests {
                 .build());
         INDArray arr = Nd4j.scalar(1);
         INDArray arr2 = Nd4j.scalar(2);
-        System.out.println(arr.add(arr2));
+        INDArray result = Nd4j.scalar(0.0);
+        System.out.println("Arr " + arr + " arr 2 " + arr2);
+        AddOp addOp = new AddOp(arr,arr2,result);
+        Nd4j.exec(addOp);
+        System.out.println(result);
     }
 
     @Test
@@ -41,23 +47,23 @@ public class AuroraTests {
     @Test
     @Ignore
     public void testAuroraBasic() {
-        veo_proc_handle proc = veo_proc_create(0);
-        Nd4jAurora.veo_args argp = veo_args_alloc();
-        veo_args_set_i64(argp, 0, 42);
-        veo_thr_ctxt ctx = veo_context_open(proc);
+        veo_proc_handle proc = Nd4jAuroraOps.getInstance().veo_proc_create(0);
+        Nd4jAurora.veo_args argp = Nd4jAuroraOps.getInstance().veo_args_alloc();
+        Nd4jAuroraOps.getInstance().veo_args_set_i64(argp, 0, 42);
+        veo_thr_ctxt ctx = Nd4jAuroraOps.getInstance().veo_context_open(proc);
         //load library and method name to run
         String libPath = System.getenv("LIB_PATH");
         String methodName = System.getenv("METHOD_NAME");
         System.out.println("Lib path " + libPath + " method name " + methodName);
 
-        long handle = veo_load_library(proc, libPath);
-        veo_call_async_by_name(ctx, handle, methodName, argp);
+        long handle = Nd4jAuroraOps.getInstance().veo_load_library(proc, libPath);
+        Nd4jAuroraOps.getInstance().veo_call_async_by_name(ctx, handle, methodName, argp);
 
         long[] output = {-2};
-        int result2 = veo_call_wait_result(ctx,handle,output);
+        int result2 = Nd4jAuroraOps.getInstance().veo_call_wait_result(ctx,handle,output);
         System.out.println("Output result " + output[0] + " with exit code " + result2);
-        veo_args_free(argp);
-        veo_context_close(ctx);
+        Nd4jAuroraOps.getInstance().veo_args_free(argp);
+        Nd4jAuroraOps.getInstance().veo_context_close(ctx);
 
         //veo_proc_destroy(proc);
     }
