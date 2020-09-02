@@ -181,6 +181,7 @@ public class Nd4jAuroraOps implements NativeOps {
                 }
             } else if (arg instanceof Pointer) {
                 Pointer p = (Pointer)arg;
+                //Args passed in here are bad.
                 if (p.limit() <= 0) {
                     int error = INSTANCE.veo_args_set_i64(argp, i, p.address() + p.position() * p.sizeof());
                     log.debug("Pointer limit <= 0, setting an address with error code {}",error);

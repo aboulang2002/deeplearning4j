@@ -17,6 +17,7 @@
 package org.nd4j.linalg.aurora.ops;
 
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.bytedeco.javacpp.BooleanPointer;
 import org.bytedeco.javacpp.DoublePointer;
 import org.bytedeco.javacpp.LongPointer;
@@ -44,6 +45,7 @@ import java.util.Map;
  *
  * @author raver119@gmail.com
  */
+@Slf4j
 public class CpuOpContext extends BaseOpContext implements OpContext, Deallocatable {
     // we might want to have configurable
     private NativeOps nativeOps = NativeOpsHolder.getInstance().getDeviceNativeOps();
@@ -114,21 +116,32 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
     @Override
     public void setInputArray(int index, @NonNull INDArray array) {
         if (array.isEmpty()) {
+            log.info("Empty array invocation for input array on index {} ",index);
             inputDeviceBuffers.put(index, null);
         } else {
             Pointer p = array.data().addressPointer();
             long size = (p.limit() - p.position()) * p.sizeof();
+            log.debug("Mallocing memory of size {} for index {}",size,index);
             Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
+            log.debug("After Mallocing memory of size {} for index {}",size,index);
+            log.debug("Memcpy memory of size {} for index {}",size,index);
             nativeOps.memcpySync(p2, p, size, 0, null);
+            log.debug("Finish Memcpy memory of size {} for index {}",size,index);
             inputDeviceBuffers.put(index, p2);
         }
+
         Pointer p = array.shapeInfoDataBuffer().addressPointer();
         long size = (p.limit() - p.position()) * p.sizeof();
+        log.debug("Mallocing shape buffer memory of size {} for index {}",size,index);
         Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
+        log.debug("After Mallocing shape buffer memory of size {} for index {}",size,index);
+        log.debug("Memcpy shape buffer memory of size {} for index {}",size,index);
         nativeOps.memcpySync(p2, p, size, 0, null);
+        log.debug("After Memcpy shape buffer memory of size {} for index {}",size,index);
         inputDeviceShapes.put(index, p2);
-
+        log.debug("Invoking set context graph input array on size {} and index {}",size,index);
         nativeOps.setGraphContextInputArray(context, index, inputDeviceBuffers.get(index), inputDeviceShapes.get(index), null, null);
+        log.debug("Finished Invoking set context graph input array on size {} and index {}",size,index);
 
         super.setInputArray(index, array);
     }
