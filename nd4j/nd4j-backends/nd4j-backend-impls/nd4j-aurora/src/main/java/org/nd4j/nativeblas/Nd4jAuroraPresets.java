@@ -41,7 +41,6 @@ import java.util.Scanner;
                         linkpath = "/opt/nec/ve/veos/lib64/",
                         library = "jnind4jaurora",
                         resource = {"nd4jaurora", "libnd4jaurora.so"},
-                        define = "LIBND4J_ALL_OPS",
                         include = {
                                 "ve_offload.h"}
 
