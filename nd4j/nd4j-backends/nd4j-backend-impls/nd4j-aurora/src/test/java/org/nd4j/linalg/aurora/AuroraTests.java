@@ -52,9 +52,12 @@ public class AuroraTests {
 
         LongPointer hostPointer = new LongPointer(2);
         hostPointer.put(0,0);
-        ops.memcpySync(hostPointer,allocated,size,0,null);
-        assertEquals(1,hostPointer.get(0));
-        assertEquals(2,hostPointer.get(1));
+        ops.memcpySync(allocated,hostPointer,size,0,null);
+
+        LongPointer readFromMemory = new LongPointer(0,0);
+        ops.memcpySync(readFromMemory,allocated,size,0,null);
+        assertEquals(1,readFromMemory.get(0));
+        assertEquals(2,readFromMemory.get(1));
     }
 
 
