@@ -13,6 +13,7 @@ import org.bytedeco.javacpp.LongPointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.annotation.Cast;
+import org.nd4j.base.Preconditions;
 import org.nd4j.linalg.api.memory.pointers.PagedPointer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -372,6 +373,7 @@ public class Nd4jAuroraOps implements NativeOps {
     @Override
     public Pointer mallocDevice(long memorySize, int deviceId, int flags) {
         log.debug("mallocDevice(" + memorySize + ")");
+        Preconditions.checkState(memorySize > 0, "Invalid memory size. Please pass in a size > 0");
         long[] addr = {0};
         int error = INSTANCE.veo_alloc_mem(proc, addr, memorySize);
         if (error != 0) {
@@ -390,6 +392,7 @@ public class Nd4jAuroraOps implements NativeOps {
             throw new RuntimeException("veo_free_mem(): error " + i);
         }
         log.debug("return " + i);
+        Preconditions.checkState(i == 0,"Call to free failed");
         return i;
     }
 
@@ -410,6 +413,8 @@ public class Nd4jAuroraOps implements NativeOps {
                 throw new RuntimeException("veo_write_mem(): error " + i);
             }
         }
+
+        Preconditions.checkState(i == 0,"Call to memcpy failed for size " + size);
         log.debug("return " + i);
         return i;
     }

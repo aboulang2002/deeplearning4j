@@ -1,6 +1,7 @@
 package org.nd4j.linalg.aurora;
 
 import org.bytedeco.javacpp.LongPointer;
+import org.bytedeco.javacpp.Pointer;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nd4j.linalg.api.buffer.DataBuffer;
@@ -8,6 +9,7 @@ import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.transforms.pairwise.arithmetic.AddOp;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.profiler.ProfilerConfig;
+import org.nd4j.nativeblas.NativeOpsHolder;
 import org.nd4j.nativeblas.Nd4jAurora;
 import org.nd4j.nativeblas.Nd4jAuroraOps;
 
@@ -17,6 +19,7 @@ import static org.nd4j.nativeblas.Nd4jAurora.*;
 public class AuroraTests {
 
     @Test
+    @Ignore
     public void testBasicAdd() {
         Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder()
                 .checkWorkspaces(true)
@@ -37,6 +40,23 @@ public class AuroraTests {
         Nd4j.exec(addOp);
         System.out.println(result);
     }
+
+    @Test
+    public void testMemory() {
+        Nd4jAuroraOps ops = (Nd4jAuroraOps) NativeOpsHolder.getInstance().getDeviceNativeOps();
+        long size = 16;
+        Pointer allocated = ops.mallocDevice(size,0,0);
+        LongPointer longPointer = new LongPointer(allocated);
+        longPointer.put(1);
+        longPointer.put(2);
+
+        LongPointer hostPointer = new LongPointer(2);
+        hostPointer.put(0,0);
+        ops.memcpySync(hostPointer,allocated,size,0,null);
+        assertEquals(1,hostPointer.get(0));
+        assertEquals(2,hostPointer.get(1));
+    }
+
 
     @Test
     public void testDataBuffers() {
