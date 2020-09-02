@@ -37,13 +37,13 @@ import java.util.Scanner;
                 @Platform(
                         value = "linux-x86_64",
                         link = "veo@.0",
-                        cinclude = {"ve_offload.h"},
                         includepath = "/opt/nec/ve/veos/include/",
                         linkpath = "/opt/nec/ve/veos/lib64/",
                         library = "jnind4jaurora",
                         resource = {"nd4jaurora", "libnd4jaurora.so"},
                         define = "LIBND4J_ALL_OPS",
                         include = {
+                                "ve_offload.h",
                                 "memory/MemoryType.h",
                                 "array/DataType.h",
                                 "array/DataBuffer.h",
