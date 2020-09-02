@@ -43,6 +43,7 @@ import java.util.Scanner;
                         library = "jnind4jaurora",
                         resource = {"nd4jaurora", "libnd4jaurora.so"},
                         define = "LIBND4J_ALL_OPS", include = {
+                        "ve_offload.h",
                         "memory/MemoryType.h",
                         "array/DataType.h",
                         "array/DataBuffer.h",
