@@ -1698,17 +1698,20 @@ public class NativeOpExecutioner extends DefaultOpExecutioner {
             context.setBArguments(op.bArgs());
             context.setIArguments(op.iArgs());
             context.setTArguments(op.tArgs());
-
+            log.info("About to execute op " + op.opName());
             val result = exec(op, context);
+            log.info("Finished execution of op " + op.opName());
+            log.info("Obtaining rng states after execution");
             val states = context.getRngStates();
 
             // pulling states back
             Nd4j.getRandom().setStates(states.getFirst(), states.getSecond());
-
+            log.info("Set states after execution");
             return result;
         } catch (ND4JOpProfilerException e){
             throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("Op [" + name + "] execution failed", e);
         }
     }
