@@ -46,12 +46,7 @@ public class AuroraTests {
         Nd4jAuroraOps ops = (Nd4jAuroraOps) NativeOpsHolder.getInstance().getDeviceNativeOps();
         long size = 16;
         Pointer allocated = ops.mallocDevice(size,0,0);
-        LongPointer longPointer = new LongPointer(allocated);
-        longPointer.put(1);
-        longPointer.put(2);
-
-        LongPointer hostPointer = new LongPointer(2);
-        hostPointer.put(0,0);
+        LongPointer hostPointer = new LongPointer(1,2);
         ops.memcpySync(allocated,hostPointer,size,0,null);
 
         LongPointer readFromMemory = new LongPointer(0,0);
