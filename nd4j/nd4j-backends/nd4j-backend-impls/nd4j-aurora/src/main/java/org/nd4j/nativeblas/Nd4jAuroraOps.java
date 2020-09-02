@@ -28,7 +28,7 @@ import static org.nd4j.nativeblas.Nd4jAurora.*;
 public class Nd4jAuroraOps implements NativeOps {
     private static Logger log = LoggerFactory.getLogger(Nd4jAuroraOps.class);
     public static final boolean LOAD_SHARED_LIBRARY = true;
-
+    private static Nd4jAurora nd4jAurora = new Nd4jAurora();
     /* Load "Nd4jAuroraOps" on VE node 0 */
     @Getter int deviceId = 0;
     @Getter String veobin = null;
@@ -103,12 +103,13 @@ public class Nd4jAuroraOps implements NativeOps {
     public String callString(String symname, Object... args) {
         BytePointer dst = new BytePointer(64 * 1024);
         long src = callLong(symname, args);
-        int error = veo_read_mem(proc, dst, src, 1);
+
+        int error = nd4jAurora.veo_read_mem(proc, dst, src, 1);
         if (error != 0) {
             throw new RuntimeException("veo_read_mem(): error " + error);
         }
         for (int i = 0; i < dst.limit(); i++) {
-            error = veo_read_mem(proc, dst.position(i), src + i, 1);
+            error = nd4jAurora.veo_read_mem(proc, dst.position(i), src + i, 1);
             if (error != 0) {
                 throw new RuntimeException("veo_read_mem(): error " + error);
             }
@@ -125,12 +126,12 @@ public class Nd4jAuroraOps implements NativeOps {
     public Object call(String symname, Object... args) {
         log.debug("call(" + symname + ", " + Arrays.deepToString(args) + ")");
 
-        long sym = veo_get_sym(proc, handle, symname);
+        long sym = nd4jAurora.veo_get_sym(proc, handle, symname);
         log.debug("Obtained symbol {} with name {}",sym,symname);
         if (sym == 0) {
             throw new RuntimeException("veo_get_sym(): failed to find symbol");
         }
-        veo_args argp = veo_args_alloc();
+        veo_args argp = nd4jAurora.veo_args_alloc();
         log.debug("Allocated arguments");
         if (argp == null) {
             throw new RuntimeException("veo_args_alloc(): allocation of veo_args failed");
@@ -140,44 +141,44 @@ public class Nd4jAuroraOps implements NativeOps {
             Object arg = args[i];
             log.debug("Setting argument {} of type {}",i,arg.getClass().getName());
             if (arg == null) {
-                int error = veo_args_set_i32(argp, i, 0);
+                int error = nd4jAurora.veo_args_set_i32(argp, i, 0);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_i32(): error " + error);
                 }
             } else if (arg instanceof Integer) {
-                int error = veo_args_set_i32(argp, i, (Integer)arg);
+                int error = nd4jAurora.veo_args_set_i32(argp, i, (Integer)arg);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_i32(): error " + error);
                 }
             } else if (arg instanceof Long) {
-                int error = veo_args_set_i64(argp, i, (Long)arg);
+                int error = nd4jAurora.veo_args_set_i64(argp, i, (Long)arg);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_i64(): error " + error);
                 }
             } else if (arg instanceof Float) {
-                int error = veo_args_set_float(argp, i, (Float)arg);
+                int error = nd4jAurora.veo_args_set_float(argp, i, (Float)arg);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_float(): error " + error);
                 }
             } else if (arg instanceof Double) {
-                int error = veo_args_set_double(argp, i, (Double)arg);
+                int error = nd4jAurora.veo_args_set_double(argp, i, (Double)arg);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_double(): error " + error);
                 }
             } else if (arg instanceof Boolean) {
-                int error = veo_args_set_i32(argp, i, (Boolean)arg ? 1 : 0);
+                int error = nd4jAurora.veo_args_set_i32(argp, i, (Boolean)arg ? 1 : 0);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_i32(): error " + error);
                 }
             } else if (arg instanceof Character) {
-                int error = veo_args_set_i32(argp, i, (Character)arg);
+                int error = nd4jAurora.veo_args_set_i32(argp, i, (Character)arg);
                 if (error != 0) {
                     throw new RuntimeException("veo_args_set_i32(): error " + error);
                 }
             } else if (arg instanceof Pointer) {
                 Pointer p = (Pointer)arg;
                 if (p.limit() <= 0) {
-                    int error = veo_args_set_i64(argp, i, p.address() + p.position() * p.sizeof());
+                    int error = nd4jAurora.veo_args_set_i64(argp, i, p.address() + p.position() * p.sizeof());
                     log.debug("Pointer limit <= 0, setting an address with error code {}",error);
                     if (error != 0) {
                         throw new RuntimeException("veo_args_set_i64(): error " + error);
@@ -185,12 +186,12 @@ public class Nd4jAuroraOps implements NativeOps {
                 } else {
                     long size = (p.limit() - p.position()) * p.sizeof();
                     long[] addr = {0};
-                    int error = veo_alloc_mem(proc, addr, size);
+                    int error = nd4jAurora.veo_alloc_mem(proc, addr, size);
                     log.debug("Pointer allocated memory of size {} with error code {}",size,error);
                     if (error != 0) {
                         throw new RuntimeException("veo_alloc_mem(): error " + error);
                     }
-                    error = veo_args_set_i64(argp, i, pointers[i] = addr[0]);
+                    error = nd4jAurora.veo_args_set_i64(argp, i, pointers[i] = addr[0]);
                     if (error != 0) {
                         throw new RuntimeException("veo_args_set_i64(): error " + error);
                     }
@@ -203,24 +204,24 @@ public class Nd4jAuroraOps implements NativeOps {
                                 log.debug("Initializing argument {}",j);
                                 LongPointer addr2 = new LongPointer(1);
                                 if (p2 == null || p2.limit() <= 0) {
-                                    error = veo_write_mem(proc, pointers[i] + j * 8, addr2.put(p2 == null ? 0 : p2.address()), 8);
+                                    error = nd4jAurora.veo_write_mem(proc, pointers[i] + j * 8, addr2.put(p2 == null ? 0 : p2.address()), 8);
                                     log.debug("Wrote memory for argument {} with error code {}",j,error);
                                     if (error != 0) {
                                         throw new RuntimeException("veo_write_mem(): error " + error);
                                     }
                                 } else {
                                     long size2 = (p2.limit() - p2.position()) * p2.sizeof();
-                                    error = veo_alloc_mem(proc, addr2, size2);
+                                    error = nd4jAurora.veo_alloc_mem(proc, addr2, size2);
                                     log.debug("Allocating memory for argument {} with size {} and error code ",j,size2,error);
                                     if (error != 0) {
                                         throw new RuntimeException("veo_alloc_mem(): error " + error);
                                     }
-                                    error = veo_write_mem(proc, addr2.get(0), p2, size2);
+                                    error = nd4jAurora.veo_write_mem(proc, addr2.get(0), p2, size2);
                                     log.debug("Wrote memory for argument {} with size {} and error code ",j,size2,error);
                                     if (error != 0) {
                                         throw new RuntimeException("veo_write_mem(): error " + error);
                                     }
-                                    error = veo_write_mem(proc, pointers[i] + j * 8, addr2, 8);
+                                    error = nd4jAurora.veo_write_mem(proc, pointers[i] + j * 8, addr2, 8);
                                     log.debug("Wrote next memory for argument {} with size {} and error code ",j,size2,error);
                                     if (error != 0) {
                                         throw new RuntimeException("veo_write_mem(): error " + error);
@@ -228,7 +229,7 @@ public class Nd4jAuroraOps implements NativeOps {
                                 }
                             }
                         } else {
-                            error = veo_write_mem(proc, pointers[i], p, size);
+                            error = nd4jAurora.veo_write_mem(proc, pointers[i], p, size);
                             log.debug("Writing memory for single pointer with index {} with size {} and error {}",i,size,error);
                             if (error != 0) {
                                 throw new RuntimeException("veo_write_mem(): error " + error);
@@ -243,14 +244,14 @@ public class Nd4jAuroraOps implements NativeOps {
             }
         }
 
-        long id = veo_call_async(ctx, sym, argp);
+        long id = nd4jAurora.veo_call_async(ctx, sym, argp);
         log.debug("Invoked VE with id {}",id);
         if (id == VEO_REQUEST_ID_INVALID) {
             throw new RuntimeException("veo_call_async(): request failed");
         }
         long[] retval = {0};
         log.debug("Waiting on result of id {}",id);
-        int error = veo_call_wait_result(ctx, id, retval);
+        int error = nd4jAurora.veo_call_wait_result(ctx, id, retval);
         log.debug("Finished call with id {} and retVal {} and error {}",id,retval[0],error);
         if (error != 0) {
             throw new RuntimeException("veo_call_wait_result(): error " + error);
@@ -271,7 +272,7 @@ public class Nd4jAuroraOps implements NativeOps {
                             log.debug("Retrieving result {}",j);
                             LongPointer addr2 = new LongPointer(1);
                             if (p2 == null || p2.limit() <= 0) {
-                                error = veo_read_mem(proc, addr2, pointers[i] + j * 8, 8);
+                                error = nd4jAurora.veo_read_mem(proc, addr2, pointers[i] + j * 8, 8);
                                 ((PointerPointer)p).put(j, array[j] = new PagedPointer(addr2.get()));
                                 log.debug("Retrieved result {} with error {} with p2 == null or p2.limit <= 0",j,error);
 
@@ -280,18 +281,18 @@ public class Nd4jAuroraOps implements NativeOps {
                                 }
                             } else {
                                 long size2 = (p2.limit() - p2.position()) * p2.sizeof();
-                                error = veo_read_mem(proc, addr2, pointers[i] + j * 8, 8);
+                                error = nd4jAurora.veo_read_mem(proc, addr2, pointers[i] + j * 8, 8);
                                 log.debug("Retrieved result {} with error {}",j,error);
                                 if (error != 0) {
                                     throw new RuntimeException("veo_read_mem(): error " + error);
                                 }
-                                error = veo_read_mem(proc, p2, addr2.get(0), size2);
+                                error = nd4jAurora.veo_read_mem(proc, p2, addr2.get(0), size2);
                                 log.debug("Retrieved result 2 {} with error {}",j,error);
                                 if (error != 0) {
                                     throw new RuntimeException("veo_read_mem(): error " + error);
                                 }
                                 log.debug("About to free memory for argument {}",j);
-                                error = veo_free_mem(proc, addr2.get(0));
+                                error = nd4jAurora.veo_free_mem(proc, addr2.get(0));
                                 log.debug("Freed for argument {} with error {}",j,error);
                                 if (error != 0) {
                                     throw new RuntimeException("veo_free_mem(): error " + error);
@@ -300,7 +301,7 @@ public class Nd4jAuroraOps implements NativeOps {
                         }
                     } else {
                         log.debug("About to read singular memory for  argument {} with error {}",error);
-                        error = veo_read_mem(proc, p, pointers[i], size);
+                        error = nd4jAurora.veo_read_mem(proc, p, pointers[i], size);
                         log.debug("Read singular memory for  argument {} with error {}",error);
                         if (error != 0) {
                             throw new RuntimeException("veo_read_mem(): error " + error);
@@ -311,7 +312,7 @@ public class Nd4jAuroraOps implements NativeOps {
                 }
 
                 log.debug("About to free memory for pointer {}",i);
-                error = veo_free_mem(proc, pointers[i]);
+                error = nd4jAurora.veo_free_mem(proc, pointers[i]);
                 log.debug("Freed memory for pointer {} with error code {}",i,error);
                 if (error != 0) {
                     throw new RuntimeException("veo_free_mem(): error " + error);
@@ -320,7 +321,7 @@ public class Nd4jAuroraOps implements NativeOps {
         }
 
         log.debug("About to free arguments");
-        veo_args_free(argp);
+        nd4jAurora.veo_args_free(argp);
 
         log.debug("return " + retval[0]);
         return retval[0];
@@ -330,18 +331,18 @@ public class Nd4jAuroraOps implements NativeOps {
     public int setDevice(int deviceId) {
         this.deviceId = deviceId;
         if (ctx != null) {
-            veo_context_close(ctx);
+            nd4jAurora.veo_context_close(ctx);
         }
         if (proc != null) {
-            veo_proc_destroy(proc);
+            nd4jAurora.veo_proc_destroy(proc);
         }
         if (LOAD_SHARED_LIBRARY) {
             log.info("Loading shared library");
-            proc = veo_proc_create(deviceId);
-            handle = veo_load_library(proc, veobin);
+            proc = nd4jAurora.veo_proc_create(deviceId);
+            handle = nd4jAurora.veo_load_library(proc, veobin);
         } else {
             log.info("Initializing static library");
-            proc = veo_proc_create_static(deviceId, veobin);
+            proc = nd4jAurora.veo_proc_create_static(deviceId, veobin);
             handle = 0;
         }
 
@@ -351,7 +352,7 @@ public class Nd4jAuroraOps implements NativeOps {
         if (handle < 1)
             throw new RuntimeException("handle is [" + handle + "]");
 
-        ctx = veo_context_open(proc);
+        ctx = nd4jAurora.veo_context_open(proc);
         if (proc == null || ctx == null) {
             throw new RuntimeException("setDevice() failed");
         }
@@ -367,7 +368,7 @@ public class Nd4jAuroraOps implements NativeOps {
     public Pointer mallocDevice(long memorySize, int deviceId, int flags) {
         log.debug("mallocDevice(" + memorySize + ")");
         long[] addr = {0};
-        int error = veo_alloc_mem(proc, addr, memorySize);
+        int error = nd4jAurora.veo_alloc_mem(proc, addr, memorySize);
         if (error != 0) {
             throw new RuntimeException("veo_alloc_mem(): error " + error);
         }
@@ -379,7 +380,7 @@ public class Nd4jAuroraOps implements NativeOps {
     @Override
     public int freeDevice(Pointer p, int deviceId) {
         log.debug("freeDevice(" + p + ")");
-        int i = veo_free_mem(proc, p.address());
+        int i = nd4jAurora.veo_free_mem(proc, p.address());
         if (i != 0) {
             throw new RuntimeException("veo_free_mem(): error " + i);
         }
@@ -393,13 +394,13 @@ public class Nd4jAuroraOps implements NativeOps {
         int i = -1;
         if (dst.limit() > 0) {
             // dst is host, src is device
-            i = veo_read_mem(proc, dst, src.address(), size);
+            i = nd4jAurora.veo_read_mem(proc, dst, src.address(), size);
             if (i != 0) {
                 throw new RuntimeException("veo_read_mem(): error " + i);
             }
         } else if (src.limit() > 0) {
             // dst is device, src is host
-            i = veo_write_mem(proc, dst.address(), src, size);
+            i = nd4jAurora.veo_write_mem(proc, dst.address(), src, size);
             if (i != 0) {
                 throw new RuntimeException("veo_write_mem(): error " + i);
             }
