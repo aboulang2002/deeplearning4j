@@ -136,8 +136,7 @@ import java.util.Scanner;
                                 "ops/declarable/headers/tests.h",
                                 "ops/declarable/headers/loss.h",
                                 "ops/declarable/headers/datatypes.h",
-                                "ops/declarable/headers/third_party.h",
-                                "ve_offload.h"},
+                                "ops/declarable/headers/third_party.h"},
                         exclude = {"cnpy/cnpy.h"}
                 )
         },
