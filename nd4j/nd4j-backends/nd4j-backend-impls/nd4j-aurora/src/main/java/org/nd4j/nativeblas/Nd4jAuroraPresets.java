@@ -136,8 +136,8 @@ import java.util.Scanner;
                                 "ops/declarable/headers/loss.h",
                                 "ops/declarable/headers/datatypes.h",
                                 "ops/declarable/headers/third_party.h",
-                                "cnpy/cnpy.h",
-                                "ve_offload.h"}
+                                "ve_offload.h"},
+                        exclude = {"cnpy/cnpy.h"}
                 )
         },
         target = "org.nd4j.nativeblas.Nd4jAurora"
