@@ -1683,21 +1683,36 @@ public class NativeOpExecutioner extends DefaultOpExecutioner {
         }
 
         val name = op.opName();
+        log.info("About to execute op pre build context " + name);
         try (val context = buildContext()) {
-
+            log.info("Context mark in place pre");
             context.markInplace(op.isInplaceCall());
+            log.info("Context mark in place post");
 
             // transferring rng state
+            log.info("Context  set rng states pre");
             context.setRngStates(Nd4j.getRandom().rootState(), Nd4j.getRandom().nodeState());
+            log.info("Context  set rng states post");
 
             //transferring input/output arrays
+            log.info("Context  set input arrays pre");
             context.setInputArrays(op.inputArguments());
+            log.info("Context  set input arrays post");
+            log.info("Context  set output arrays pre");
             context.setOutputArrays(op.outputArguments());
+            log.info("Context  set output arrays post");
 
             // transferring static args
+            log.info("Context  set b args pre");
             context.setBArguments(op.bArgs());
+            log.info("Context  set b args post");
+            log.info("Context  set i args pre");
             context.setIArguments(op.iArgs());
+            log.info("Context  set i args post");
+            log.info("Context  set t args pre");
             context.setTArguments(op.tArgs());
+            log.info("Context  set t args post");
+
             log.info("About to execute op " + op.opName());
             val result = exec(op, context);
             log.info("Finished execution of op " + op.opName());
