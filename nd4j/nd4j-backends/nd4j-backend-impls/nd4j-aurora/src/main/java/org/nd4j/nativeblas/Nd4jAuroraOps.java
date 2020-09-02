@@ -142,7 +142,8 @@ public class Nd4jAuroraOps implements NativeOps {
         long[] pointers = new long[args.length];
         for (int i = 0; i < args.length; i++) {
             Object arg = args[i];
-            log.debug("Setting argument {} of type {}",i,arg.getClass().getName());
+            if(arg != null)
+                log.debug("Setting argument {} of type {}",i,arg.getClass().getName());
             if (arg == null) {
                 int error = INSTANCE.veo_args_set_i32(argp, i, 0);
                 if (error != 0) {
