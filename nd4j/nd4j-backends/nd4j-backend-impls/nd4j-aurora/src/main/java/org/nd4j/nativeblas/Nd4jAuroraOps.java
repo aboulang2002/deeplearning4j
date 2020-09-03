@@ -186,7 +186,7 @@ public class Nd4jAuroraOps implements NativeOps {
                 if (p.limit() <= 0) {
                     //device pointer case
                     int error = INSTANCE.veo_args_set_i64(argp, i, p.address() + p.position() * p.sizeof());
-                    log.debug("Pointer limit <= 0, setting an address with error code {}",error);
+                    log.debug("Pointer limit <= 0, setting an address {} with error code {} at argument index {}",p.address(),error,i);
                     if (error != 0) {
                         throw new RuntimeException("veo_args_set_i64(): error " + error);
                     }

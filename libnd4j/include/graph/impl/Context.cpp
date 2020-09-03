@@ -408,18 +408,30 @@ namespace sd {
         }
 
         void Context::setInputArray(int index, void *buffer, void *shapeInfo, void *specialBuffer, void *specialShapeInfo) {
+            nd4j_printf("Setting input array argument %d\n", index);
             auto array = new NDArray(buffer, specialBuffer, reinterpret_cast<Nd4jLong *>(shapeInfo));
-
+            nd4j_printf("Created input array argument %d\n", index);
+            nd4j_printf("Increasing size of fast path in %d\n", index + 1);
             if (_fastpath_in.size() < index + 1)
-                _fastpath_in.resize(index+1);
+                _fastpath_in.resize(index + 1);
+            nd4j_printf("Increased size of fast path in %d\n", index + 1);
 
+            nd4j_printf("Setting fast path index %d\n", index);
             _fastpath_in[index] = array;
+            nd4j_printf("Set fast path index %d\n", index);
+            nd4j_printf("Adding handle %d\n", index);
             _handles.emplace_back(array);
-
-            if (_context != nullptr)
+            nd4j_printf("Added handle %d\n", index);
+            nd4j_printf("Attempting to set context %d \n", index);
+            if (_context != nullptr) {
                 array->setContext(_context);
-        }
+                nd4j_printf("Set context %d \n",index);
+            }
+            else {
+                nd4j_printf("No context to set %d \n",index);
+            }
 
+        }
         void Context::setOutputArray(int index, NDArray *array, bool removable) {
             if (_fastpath_out.size() < index + 1)
                 _fastpath_out.resize(index+1);
