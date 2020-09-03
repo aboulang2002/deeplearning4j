@@ -400,15 +400,19 @@ public class Nd4jAuroraOps implements NativeOps {
 
     @Override
     public int memcpySync(Pointer dst, Pointer src, long size, int flags, Pointer reserved) {
+        Preconditions.checkState(size > 0,"Can not memcpy size of 0!");
         log.debug("memcpySync(" + dst + ", " + src + ", " + size + ")");
+        Preconditions.checkState(dst.limit() > 0 ||  src.limit() > 0,"No valid pointer passed in. Either src or destination must have a limit set.");
         int i = -1;
         if (dst.limit() > 0) {
+            log.debug("Reading memory to host.");
             // dst is host, src is device
             i = INSTANCE.veo_read_mem(proc, dst, src.address(), size);
             if (i != 0) {
                 throw new RuntimeException("veo_read_mem(): error " + i);
             }
         } else if (src.limit() > 0) {
+            log.debug("Writing memory to device.");
             // dst is device, src is host
             i = INSTANCE.veo_write_mem(proc, dst.address(), src, size);
             if (i != 0) {

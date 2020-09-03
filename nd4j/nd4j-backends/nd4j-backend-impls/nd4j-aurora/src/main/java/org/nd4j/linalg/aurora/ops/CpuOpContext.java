@@ -125,6 +125,8 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
             Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
             log.debug("After Mallocing memory of size {} for index {}",size,index);
             log.debug("Memcpy memory of size {} for index {}",size,index);
+            //ensure limit indicates this is a device copy
+            p.limit(size);
             nativeOps.memcpySync(p2, p, size, 0, null);
             log.debug("Finish Memcpy memory of size {} for index {}",size,index);
             inputDeviceBuffers.put(index, p2);
@@ -137,6 +139,8 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
         log.debug("After Mallocing shape buffer memory of size {} for index {}",size,index);
         log.debug("Memcpy shape buffer memory of size {} for index {}",size,index);
         nativeOps.memcpySync(p2, p, size, 0, null);
+        //ensure limit indicates this is a device copy
+        p.limit(size);
         log.debug("After Memcpy shape buffer memory of size {} for index {}",size,index);
         inputDeviceShapes.put(index, p2);
         log.debug("Invoking set context graph input array on size {} and index {}",size,index);

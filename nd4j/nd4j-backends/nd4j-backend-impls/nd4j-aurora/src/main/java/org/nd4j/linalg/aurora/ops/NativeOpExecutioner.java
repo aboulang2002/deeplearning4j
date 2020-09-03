@@ -1846,10 +1846,10 @@ public class NativeOpExecutioner extends DefaultOpExecutioner {
             }
 
             log.error("Failed to calculate output shapes for op " + op.opName() + ". Attempted to execute with " +
-                    String.valueOf(op.numInputArguments()) + " inputs, " +
-                    String.valueOf(op.numOutputArguments()) + " outputs, "+
-                    String.valueOf(op.numTArguments()) + " targs and " +
-                    String.valueOf(op.numIArguments()) + " iargs. " +
+                    op.numInputArguments() + " inputs, " +
+                    op.numOutputArguments() + " outputs, "+
+                    op.numTArguments() + " targs and " +
+                    op.numIArguments() + " iargs. " +
                     sb.toString() +
                     " - Please see above message (printed out from c++) for a possible cause of error.");
             throw t;
