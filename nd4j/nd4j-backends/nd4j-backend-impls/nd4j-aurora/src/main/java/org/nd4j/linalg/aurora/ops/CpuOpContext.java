@@ -131,7 +131,7 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
         }
 
         Pointer p = array.shapeInfoDataBuffer().addressPointer();
-        long size = (p.limit() - p.position()) * p.sizeof();
+        long size = array.shapeInfoDataBuffer().length() * array.shapeInfoDataBuffer().getElementSize();
         log.debug("Mallocing shape buffer memory of size {} for index {}",size,index);
         Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
         log.debug("After Mallocing shape buffer memory of size {} for index {}",size,index);
