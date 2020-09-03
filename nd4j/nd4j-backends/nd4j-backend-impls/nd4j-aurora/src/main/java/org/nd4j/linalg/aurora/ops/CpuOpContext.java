@@ -120,7 +120,7 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
             inputDeviceBuffers.put(index, null);
         } else {
             Pointer p = array.data().addressPointer();
-            long size = (p.limit() - p.position()) * p.sizeof();
+            long size = array.data().getElementSize() * array.data().length();
             log.debug("Mallocing memory of size {} for index {}",size,index);
             Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
             log.debug("After Mallocing memory of size {} for index {}",size,index);
