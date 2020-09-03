@@ -119,7 +119,7 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
             log.info("Empty array invocation for input array on index {} ",index);
             inputDeviceBuffers.put(index, null);
         } else {
-            Pointer p = array.data().addressPointer();
+            Pointer p = new Pointer(array.data().addressPointer());
             long size = array.data().getElementSize() * array.data().length();
             log.debug("Mallocing memory of size {} for index {}",size,index);
             Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
@@ -130,7 +130,7 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
             inputDeviceBuffers.put(index, p2);
         }
 
-        Pointer p = array.shapeInfoDataBuffer().addressPointer();
+        Pointer p = new Pointer(array.shapeInfoDataBuffer().addressPointer());
         long size = array.shapeInfoDataBuffer().length() * array.shapeInfoDataBuffer().getElementSize();
         log.debug("Mallocing shape buffer memory of size {} for index {}",size,index);
         Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
