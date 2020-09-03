@@ -138,9 +138,10 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
         Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
         log.debug("After Mallocing shape buffer memory of size {} for index {}",size,index);
         log.debug("Memcpy shape buffer memory of size {} for index {}",size,index);
-        nativeOps.memcpySync(p2, p, size, 0, null);
         //ensure limit indicates this is a device copy
         p.limit(size);
+        nativeOps.memcpySync(p2, p, size, 0, null);
+
         log.debug("After Memcpy shape buffer memory of size {} for index {}",size,index);
         inputDeviceShapes.put(index, p2);
         log.debug("Invoking set context graph input array on size {} and index {}",size,index);
@@ -155,16 +156,29 @@ public class CpuOpContext extends BaseOpContext implements OpContext, Deallocata
         if (array.isEmpty()) {
             outputDeviceBuffers.put(index, null);
         } else {
-            Pointer p = array.data().addressPointer();
-            long size = (p.limit() - p.position()) * p.sizeof();
+            Pointer p = new Pointer(array.data().addressPointer());
+            long size = array.length() * array.data().getElementSize();
+            log.debug("Mallocing output memory of size {} for index {}",size,index);
+
             Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
+            log.debug("Malloced output memory of size {} for index {}",size,index);
+            //read memory to host
+            p2.limit(size);
             nativeOps.memcpySync(p2, p, size, 0, null);
+            log.debug("Copying output memory of size {} for index {}",size,index);
             outputDeviceBuffers.put(index, p2);
         }
-        Pointer p = array.shapeInfoDataBuffer().addressPointer();
-        long size = (p.limit() - p.position()) * p.sizeof();
+
+        Pointer p = new Pointer(array.shapeInfoDataBuffer().addressPointer());
+        long size = array.shapeInfoDataBuffer().length() * array.shapeInfoDataBuffer().getElementSize();
+        log.debug("Mallocing output shape memory of size {} for index {}",size,index);
         Pointer p2 = nativeOps.mallocDevice(size, -1, 0);
+        log.debug("Malloced output shape memory of size {} for index {}",size,index);
+        //read memory to host
+        p2.limit(size);
+        log.debug("Copying output shape memory of size {} for index {}",size,index);
         nativeOps.memcpySync(p2, p, size, 0, null);
+        log.debug("Copied output shape memory of size {} for index {}",size,index);
         outputDeviceShapes.put(index, p2);
 
         nativeOps.setGraphContextOutputArray(context, index, outputDeviceBuffers.get(index), outputDeviceShapes.get(index), null, null);
