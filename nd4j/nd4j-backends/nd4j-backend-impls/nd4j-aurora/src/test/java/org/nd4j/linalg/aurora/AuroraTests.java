@@ -19,7 +19,6 @@ import static org.nd4j.nativeblas.Nd4jAurora.*;
 public class AuroraTests {
 
     @Test
-    @Ignore
     public void testBasicAdd() {
         Nd4j.getExecutioner().setProfilingConfig(ProfilerConfig.builder()
                 .checkWorkspaces(true)
@@ -42,6 +41,7 @@ public class AuroraTests {
     }
 
     @Test
+    @Ignore
     public void testMemory() {
         Nd4jAuroraOps ops = (Nd4jAuroraOps) NativeOpsHolder.getInstance().getDeviceNativeOps();
         long size = 16;

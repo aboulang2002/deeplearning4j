@@ -184,6 +184,7 @@ public class Nd4jAuroraOps implements NativeOps {
                 Pointer p = (Pointer)arg;
                 //Args passed in here are bad.
                 if (p.limit() <= 0) {
+                    //device pointer case
                     int error = INSTANCE.veo_args_set_i64(argp, i, p.address() + p.position() * p.sizeof());
                     log.debug("Pointer limit <= 0, setting an address with error code {}",error);
                     if (error != 0) {
@@ -191,6 +192,7 @@ public class Nd4jAuroraOps implements NativeOps {
                     }
                 } else {
                     long size = (p.limit() - p.position()) * p.sizeof();
+                    Preconditions.checkState(size > 0,"Size must be greater than zero! Pointer limit was: " + p.limit() + " position was " + p.position() + " and size was " + p.sizeof());
                     long[] addr = {0};
                     int error = INSTANCE.veo_alloc_mem(proc, addr, size);
                     log.debug("Pointer allocated memory of size {} with error code {}",size,error);
